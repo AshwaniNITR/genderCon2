@@ -43,6 +43,11 @@ def classify_gender(image_bytes, min_confidence=60):
 
     return predicted_gender, confidence
 
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({"status": "Gender API is running"}), 200
+
+
 @app.route("/predict_gender", methods=["POST"])
 def predict_gender():
     if "image" not in request.files:
@@ -65,6 +70,17 @@ def predict_gender():
         print("🔥 UNEXPECTED ERROR:", e)
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
+@app.before_first_request
+def warmup():
+    dummy = np.zeros((224, 224, 3), dtype=np.uint8)
+    DeepFace.analyze(
+        dummy,
+        actions=["gender"],
+        detector_backend="mtcnn",
+        enforce_detection=False,
+        align=False
+    )
+
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=False,threaded=True)
+    app.run(host="0.0.0.0", port=5000, debug=False,threaded=False)
