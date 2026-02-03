@@ -70,16 +70,7 @@ def predict_gender():
         print("🔥 UNEXPECTED ERROR:", e)
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
-@app.before_first_request
-def warmup():
-    dummy = np.zeros((224, 224, 3), dtype=np.uint8)
-    DeepFace.analyze(
-        dummy,
-        actions=["gender"],
-        detector_backend="mtcnn",
-        enforce_detection=False,
-        align=False
-    )
+
 
 
 if __name__ == "__main__":
