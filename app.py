@@ -4,6 +4,7 @@ from deepface import DeepFace
 import numpy as np
 import cv2
 import traceback
+import os
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
@@ -45,7 +46,7 @@ def classify_gender(image_bytes, min_confidence=60):
 
 @app.route("/", methods=["GET"])
 def home():
-    return jsonify({"status": "Gender API is running"}), 200
+     return {"status": "ok"}
 
 
 @app.route("/predict_gender", methods=["POST"])
@@ -74,4 +75,5 @@ def predict_gender():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=False,threaded=False)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False,threaded=False)
